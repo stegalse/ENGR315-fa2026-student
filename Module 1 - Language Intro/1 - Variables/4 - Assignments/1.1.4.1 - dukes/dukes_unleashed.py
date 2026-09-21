@@ -12,8 +12,13 @@ Note: this problem does not require the "compounding interest" formula from the 
 
 """
 
-### Your code here ###
+in_state_tuition = 30792 # total cost for in-state student
+out_state_tuition = 47882 # total cost for out-of-state student
+rate = 5 # interest rate in percent (will be divided by 100)
 
-in_state_gift = 0
+in_state_gift = in_state_tuition/(rate/100)
 
-out_state_gift = 0
+out_state_gift = out_state_tuition/(rate/100)
+
+print("Gift required to pay for in-state student: $", in_state_gift)
+print("Gift required to payfor out-of-state student: $", out_state_gift)
