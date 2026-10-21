@@ -60,10 +60,15 @@ def calculate_stress(force, sample_diameter):
     :return: An array of stresses experienced by the sample in MegaPascals (MPa)
     """
 
-    ### YOUR SOLUTION FROM STEP 1 TEMPLATE HERE ###
+    # calculate the cross-section area (mm^2)
+  
+    area = (math.pi * (sample_diameter ** 2)) / 4
 
-    return None
+    # calculate stress (MPa) from load (kN) and cross-sectional area
+    stress = (force * 1000) / area  # Convert kN to N by multiplying by 1000
 
+    return stress
+   
 
 def calculate_max_strength_strain(strain, stress):
     """
@@ -75,9 +80,13 @@ def calculate_max_strength_strain(strain, stress):
     Fracture Strain: the maximum strain experienced before fracture
     """
 
-    ### YOUR SOLUTION FROM STEP 2 TEMPLATE HERE ###
+    # calculate the maximum stress experienced
+    ultimate_tensile_stress = np.max(stress)
 
-    return -1, -1
+    # calculate the maximum strain experienced
+    fracture_strain = np.max(strain)
+
+    return ultimate_tensile_stress, fracture_strain
 
 def calculate_elastic_modulus(strain, stress):
     """
@@ -126,6 +135,105 @@ def calculate_elastic_modulus(strain, stress):
 
     # uncomment the line below and call np.polyfit
     # slope, intercept = ....
+
+    return linear_index, slope, intercept
+
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+
+    # modify this line to select different materials/folders within tensile/
+    material_folder = "1045CR"
+
+    # modify this line to select different samples in the material folder
+    sample_name = "C01A1045CR_1"
+
+
+    ### Do not modify below this line ###
+
+    path_to_directory = "../../../data/tensile/"
+    path_to_samples = path_to_directory + material_folder + "/"
+
+    # manually parse file to get gage diameter and then calculate cross-sectional area
+    path_to_file = path_to_samples + sample_name + ".csv"
+
+    # Step #1: Parse the file ane return based values
+    # sample diameter (mm), time (s), displacement (mm), force (kN), and strain (%)
+    sample_diameter, time, displacement, force, strain = parse_tensile_file(path_to_file)
+
+    # Step #1: Given the forces and sample diameter, calculate the strain
+    stress = calculate_stress(force, sample_diameter)
+
+    if stress is None:
+        print("Error! No stress returned. Did you fill in the calculate_stress() method?")
+        sys.exit(-1)
+
+    # use scatter plot so we don't assume a line (yet)
+    plt.scatter(strain, stress, label="Stress - Strain")
+    plt.xlabel('Strain (mm/mm)')
+    plt.ylabel('Stress (MPa)')
+    plt.title('Stress-Strain Curve for Sample ' + sample_name)
+    plt.show()
+
+    # Step #2: Calculate basic parameters such as the ultimate tensile strength
+    # and fracture strain
+
+    # calculate easy variables
+    ultimate_tensile_strength, fracture_strain = calculate_max_strength_strain(strain, stress)
+
+    if ultimate_tensile_strength==-1 or fracture_strain ==-1:
+        print("Error! Tensile Strength or Fracture Strain returned as -1. Did you complete the calculate_max_strength() method?")
+        sys.exit(-1)
+
+    print("Ultimate Tensile Stress is ", ultimate_tensile_strength, "MPa")
+    print("Fracture Strain is ", 100 * fracture_strain, " percent")
+
+    # Step #3: Use the Secant Modulus at 40% of Peak Stress
+    # to determine elastic modulus
+
+
+def calculate_elastic_modulus(strain, stress):
+    """
+        Given a set of stress strain data, use the Secant Modulus at 40% method to determine
+        the elastic modulus
+        :param strain:
+        :param stress:
+        :return:
+        linear_index: the index within the strain/stress data that is the end of the linear region
+        slope: the slope for the linear region of the strain/stress data
+        intercept: y-intercept for linear region best fit of strain/stress data
+    """
+
+    # dummy variables the function should over write
+    linear_index = None
+    slope = None
+    intercept = None
+
+    # Step 3a: find the point that is 40% of peak stress
+    # use from 0 to that value to create a linear plot
+    secant_strain = 0.4 * np.max(stress)
+
+    # Step 3b: find the intersection between 40% line and the curvey
+    # take th abs() difference between the stress vector and secant_strain point
+    diffs = np.abs(stress - secant_strain)
+
+    # use np.argmin() to find the minimum of the diffs array.
+    # this will be the INDEX of the point in stress-strain that is closest to
+    # secant_strain intersection
+
+    # uncomment the line below and replace with your own
+    linear_index = np.argmin(diffs)
+
+    # Step 3c: down select to linear region for stress and strain
+    # using list slicing. Uncomment lines below
+    linear_stress = stress[0:linear_index]
+    linear_strain = strain[0:linear_index]
+
+    # Step 3d: find least squares fit to a line in the linear region
+    # use 1-degree polynominal fit (line) from np.polyfit
+    # save the slope and intercept so we can plot the line later
+
+    # uncomment the line below and call np.polyfit
+    slope, intercept = np.polyfit(linear_strain, linear_stress, 1)
 
     return linear_index, slope, intercept
 
