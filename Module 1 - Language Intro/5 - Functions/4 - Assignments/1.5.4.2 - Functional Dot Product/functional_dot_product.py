@@ -18,11 +18,22 @@ def dot_product(a,b):
     :return: The dot product as a value between a * b
     """
 
-    ### YOUR CODE HERE ###
+    dot = []
+
+    for number in range(len(vector_a)): # for each number in the list
+        n_1 = number
+        a_n = vector_a[n_1]
+        b_n = vector_b[n_1]
+        dot_n = a_n*b_n
+        dot.append(dot_n)
+        continue
+        
+    # store your result here. Do not change the name
+    dot_product = sum(dot)
 
 
     ### CHANGE THIS RETURN VALUE. IT IS HERE SO THE CODE DOES NOT ERROR
-    return None
+    return dot_product
 
 """
 Step 1: Generate two "vectors" of equal length but full of random values

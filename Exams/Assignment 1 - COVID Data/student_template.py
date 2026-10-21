@@ -67,4 +67,95 @@ def parse_nyt_data(file_path=''):
 
     return data
 
-### YOUR CODE HERE ###
+
+#Q1: When was the first positive case in Harrisonburg and Rockingham County?
+
+# First, I need to add a relative path to us-counties file 
+# Go up two folders, then find us-counties data
+data = parse_nyt_data('../../data/covid/us-counties.csv')
+
+# Make list to hold dates when cases were recorded in Harrisonburg and Rockingham County
+harrisonburg_dates = []
+rockingham_dates = []
+
+# Label each location in tuples to corresponding data value
+for entry in data: 
+    date = entry[0]
+    county = entry[1]
+    state = entry[2]
+    fips = entry[3]
+    cases = entry[4]
+    deaths = entry[5]
+    # Find when cases were recorded in Harrisonburg and Rockingham County
+    if state == 'Virginia':
+        if county == 'Harrisonburg city' and cases != '0':
+            harrisonburg_dates.append(date)
+            continue
+        elif county == 'Rockingham' and cases != '0':
+            rockingham_dates.append(date)
+            continue
+
+# Find the earliest date a positive case was found and print result
+harrisonburg_first = min(harrisonburg_dates)
+print("First positive case in Harrisonburg:", harrisonburg_first)
+rockingham_first = min(rockingham_dates)
+print("First positive case in Rockingham:", rockingham_first)
+
+
+#Q2: What date had the highest number of new cases in Harrisonburg and Rockingham County? 
+# Make a list holding the number of cases recorded in both areas 
+harrisonburg_cases = []
+rockingham_cases = []
+
+# Label each location in tuples to corresponding data value
+for entry in data: 
+    date = entry[0]
+    county = entry[1]
+    state = entry[2]
+    flips = entry[3]
+    cases = entry[4]
+    deaths = entry[5]
+    # Find when cases were in Harrisonburg and Rockingham County
+    if state == 'Virginia':
+        if county == 'Harrisonburg city':
+            harrisonburg_cases.append((date, cases))
+            continue
+        elif county == 'Rockingham':
+            rockingham_cases.append((date, cases))
+            continue
+
+# Find the highest number of new cases in Harrisonburg and Rockingham County in one day
+harrisonburg_max_cases = max(harrisonburg_cases)
+rockingham_max_cases = max(rockingham_cases)
+
+#Find the date corresponding to the highest number of new cases then print both values
+harrisonburg_max_date = harrisonburg_max_cases[0]
+rockingham_max_date = rockingham_max_cases[0]
+print("Highest number of new cases in Harrisonburg was", harrisonburg_max_cases[1], "on", harrisonburg_max_date)
+print("Highest number of new cases in Rockingham County was", rockingham_max_cases[1], "on", rockingham_max_date)
+
+
+#Q3: What seven day period had the highest number of new cases in Harrisonburg and Rockingham County? 
+# Find seven days in a row where there was the most cases recorded
+
+# Make variables to hold the maximum seven-day case counts for both locations
+harrisonburg_seven_day_max = 0
+rockingham_seven_day_max = 0
+
+# Find Harrisonburg seven day max using a seven day sliding window
+for i in range(len(harrisonburg_cases) - 6):
+    seven_day_sum = sum(cases for date, cases in harrisonburg_cases[i:i+7])
+    if seven_day_sum > harrisonburg_seven_day_max:
+        harrisonburg_seven_day_max = seven_day_sum
+        harrisonburg_seven_day_start_date = harrisonburg_cases[i][0]
+
+# Find Rockingham seven day max using a seven day sliding window
+for i in range(len(rockingham_cases) - 6):
+    seven_day_sum = sum(cases for date, cases in rockingham_cases[i:i+7])
+    if seven_day_sum > rockingham_seven_day_max:
+        rockingham_seven_day_max = seven_day_sum
+        rockingham_seven_day_start_date = rockingham_cases[i][0]
+
+# Print results
+print("Worst seven-day period in Harrisonburg started on", harrisonburg_seven_day_start_date, "where", harrisonburg_seven_day_max, "cases were recorded.")
+print("Worst seven-day period in Rockingham County started on", rockingham_seven_day_start_date, "where", rockingham_seven_day_max, "cases were recorded.")

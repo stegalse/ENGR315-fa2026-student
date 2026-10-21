@@ -1,0 +1,16 @@
+
+
+for entry in data: 
+    date = data[0]
+    county = data[1]
+    state = data[1]
+    fips = data[3]
+    cases = data[4]
+    deaths = data[5]
+    # find the first case in Harrisonburg and Rockingham County
+    if state == 'Virginia' and county == 'Harrisonburg' and cases == '1':
+        print("First positive case in Harrisonburg:", date)
+        break
+    elif county == 'Rockingham' and cases == '1':
+        print("First positive case in Rockingham:", date)
+        break

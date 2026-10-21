@@ -23,11 +23,26 @@ vector_b = generate_random_int_list(fixed_length, maximum_value)
 """
 Step 2: Iterate through the vector(s) and calculate the dot product
 """
+#n = 0
+#a_0 = vector_a[n] # access vector a
+#b_0 = vector_b[n] # access vector b
+#dot_0 = a_0*b_0 # calculate the first part of the dot product
 
+dot = []
+
+for number in range(len(vector_a)): # for each number in the list
+    n_1 = number
+    a_n = vector_a[n_1]
+    b_n = vector_b[n_1]
+    dot_n = a_n*b_n
+    dot.append(dot_n)
+    continue
+    
 # store your result here. Do not change the name
-dot_product = 0
+dot_product = sum(dot)
 
-### Your code here
+print("Vector A is:", vector_a)
+print("Vector B is:", vector_b)
 
 """
 Step 3: Calculate the error of your dot_product compared with numpy's solution
