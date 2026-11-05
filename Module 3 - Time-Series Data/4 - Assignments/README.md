@@ -33,7 +33,10 @@ Submit Step 4 file to Gradescope
 
 Complete the generate_csv_file() method in the template. Solution will write all tensile data to a singular CSV file.
 
+<<<<<<< Updated upstream
 Before running the template, open writing_tensile_utils.py and copy in your four completed functions from Tensile Testing
 (calculate_stress, calculate_max_strength_strain, calculate_elastic_modulus, calculate_percent_offset).
 
 Submit only your writing-tensile-data-template.py file to Gradescope.
+=======
+>>>>>>> Stashed changes

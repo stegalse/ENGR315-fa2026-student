@@ -65,11 +65,17 @@ def calculate_stress(force, sample_diameter):
     area = (math.pi * (sample_diameter ** 2)) / 4
 
     # calculate stress (MPa) from load (kN) and cross-sectional area
+<<<<<<< Updated upstream
     stress = (force * 1000) / area  # Convert kN to N by multiplying by 1000
+=======
+    ### your code here ###
+
+    # delete this line and replace it with your own
+    stress = None
+    
+>>>>>>> Stashed changes
 
     return stress
-
-
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt

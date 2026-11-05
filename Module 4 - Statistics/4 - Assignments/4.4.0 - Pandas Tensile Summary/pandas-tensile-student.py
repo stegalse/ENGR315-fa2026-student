@@ -25,9 +25,9 @@ def load_tensile_data(_path: str):
     :return: A DataFrame with one row per sample
     """
 
-    # YOUR CODE HERE #
+    df = pd.read_csv(_path)
 
-    return None
+    return df
 
 
 def select_material(_df, _material: str):
@@ -38,9 +38,10 @@ def select_material(_df, _material: str):
     :return: A DataFrame that only contains the rows for that material. All columns are kept.
     """
 
-    # YOUR CODE HERE #
+    material = _df['Material_Type']
+    select_material = _df[material == _material]
 
-    return None
+    return select_material
 
 
 def select_strong(_df, _material: str, _min_yield: float):
@@ -53,10 +54,10 @@ def select_strong(_df, _material: str, _min_yield: float):
     :return: A DataFrame with the rows that meet both conditions. All columns are kept.
     """
 
-    # YOUR CODE HERE #
+    strong_material = _df['Material_Type'] == _material
+    strong_yield = _df['Yield_Strength'] > _min_yield
 
-    return None
-
+    return _df[strong_material & strong_yield]
 
 def get_values(_df, _material: str, _column: str):
     """
@@ -67,9 +68,9 @@ def get_values(_df, _material: str, _column: str):
     :return: A Numpy array (not a Pandas Series) of the values, in the same order as the DataFrame
     """
 
-    # YOUR CODE HERE #
+    np_array = _df[_df['Material_Type'] == _material][_column].to_numpy()
 
-    return None
+    return np_array
 
 
 def material_statistics(_df, _material: str, _column: str):
@@ -82,9 +83,10 @@ def material_statistics(_df, _material: str, _column: str):
     :return: A tuple of (mean, standard deviation)
     """
 
-    # YOUR CODE HERE #
+    mean = _df[_df['Material_Type'] == _material][_column].mean()
+    std = _df[_df['Material_Type'] == _material][_column].std()
 
-    return None
+    return mean, std
 
 
 def summary_table(_df, _columns: list):
@@ -98,9 +100,17 @@ def summary_table(_df, _columns: list):
              {'PMMA': {'Elastic_Modulus': (3.09, 0.2), 'Yield_Strength': (49.41, 3.04)}, ...}
     """
 
-    # YOUR CODE HERE #
+    summary = {}
+    materials = _df['Material_Type'].unique()
 
-    return None
+    for material in materials:
+        summary[material] = {}
+        for column in _columns:
+            mean = _df[_df['Material_Type'] == material][column].mean()
+            std = _df[_df['Material_Type'] == material][column].std()
+            summary[material][column] = (mean, std)
+
+    return summary
 
 
 if __name__ == '__main__':

@@ -46,7 +46,22 @@ def one_sided_tests(_files: list, _mean: float, _alpha: float, _less_than: bool)
     # list of files where the null hypothesis is rejected
     reject_null_hypothesis = []
 
-    # YOUR CODE HERE #
+    # iterate through the list of files
+    for f in _files:    
+        # load the data from the file into a numpy array
+        data = np.loadtxt(f)
+
+        # perform a one-sided t-test on the data. Use scipy.stats.ttest_1samp() to get the t-statistic and p-value
+        t_statistic, p_value = ttest_1samp(data, _mean)
+
+        # if this is a left-sided test, then divide the p-value by 2 and check if it is less than alpha
+        if _less_than:
+            if p_value / 2 < _alpha and t_statistic < 0:
+                reject_null_hypothesis.append(f)
+        # otherwise, this is a right-sided test. Divide the p-value by 2 and check if it is less than alpha
+        else:
+            if p_value / 2 < _alpha and t_statistic > 0:
+                reject_null_hypothesis.append(f)
 
     # return files that were rejected
     return reject_null_hypothesis
