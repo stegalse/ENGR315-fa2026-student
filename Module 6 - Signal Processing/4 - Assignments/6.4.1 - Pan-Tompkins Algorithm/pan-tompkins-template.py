@@ -15,36 +15,70 @@ def detect_heartbeats(filepath):
     path = filepath
 
     # load data in matrix from CSV file; skip first two rows
-    ## your code here
+    data = np.loadtxt(path, delimiter=',', skiprows=2)
 
     # save each vector as own variable
-    ## your code here
+    time = data[:, 0]
+    MLII = data[:, 1]
+    V1 = data[:, 2]
 
     # identify one column to process. Call that column signal
 
-    signal = -1 ## your code here
+    signal = MLII.copy()
 
-    # pass data through LOW PASS FILTER (OPTIONAL)
-    ## your code here
+    # determine sampling frequency
+    fs = 1 / np.mean(np.diff(time))
 
-    # pass data through HIGH PASS FILTER (OPTIONAL) to create BAND PASS result
-    ## your code here
+   # pass data through LOW PASS FILTER
+    low_window = int(fs / 30)
+    low_window = max(1, low_window)
+
+    low_filter = np.ones(low_window) / low_window
+    lowpassed = np.convolve(signal, low_filter, mode='same')
+
+    # pass data through HIGH PASS FILTER
+    high_window = int(0.2 * fs)
+
+    high_filter = np.ones(high_window) / high_window
+    baseline = np.convolve(lowpassed, high_filter, mode='same')
+
+    signal = lowpassed - baseline
 
     # pass data through differentiator
-    ## your code here
+    differentiated = np.diff(signal)
 
     # pass data through square function
-    ## your code here
+    squared = differentiated ** 2
 
     # pass through moving average window
-    ## your code here
+    window_size = 54
+    window = np.ones(window_size) / window_size
+    averaged = np.convolve(squared, window, mode='same')
+
+    # identify local maxima
+    candidates = np.where(
+        (averaged[1:-1] > averaged[:-2]) &
+        (averaged[1:-1] > averaged[2:])
+    )[0] + 1
+
+    # set minimum distance between peaks
+    min_distance = int(0.25 * 360)
+
+    # set threshold
+    threshold = np.mean(averaged) + 0.1 * np.std(averaged)
+
 
     # use find_peaks to identify peaks within averaged/filtered data
-    # save the peaks result and return as part of testbench result
+    peaks = []
 
-    ## your code here peaks,_ = find_peaks(....)
+    for peak in candidates:
 
-    beats = None
+        if averaged[peak] > threshold:
+
+            if len(peaks) == 0 or peak - peaks[-1] >= min_distance:
+                peaks.append(peak)
+
+    beats = np.array(peaks) 
 
     # do not modify this line
     return signal, beats
